@@ -108,8 +108,7 @@ class TwilioSender
       client.messages.create(
         from: ENV['TWILIO_PHONE_NUMBER'],
         to: number,
-        body: part,
-        media_url: image_url
+        body: part
       )
     end
   end
