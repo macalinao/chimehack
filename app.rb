@@ -89,7 +89,7 @@ class TwilioSender
   end
 
   def image_url
-    map = GoogleStaticMap.new(zoom: 13)
+    map = GoogleStaticMap.new(zoom: 14)
     map.markers << MapMarker.new({
       color: "red",
       location: MapLocation.new(address: places.first)
