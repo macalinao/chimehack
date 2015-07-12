@@ -78,7 +78,6 @@ class TwilioSender
     %{
       Let's get you home safely.
       #{directions_str}
-      Your destination is on the left.
     }
   end
 
