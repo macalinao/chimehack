@@ -31,9 +31,19 @@ class TwilioSender
     if body.include?('to')
       @places = body.split('to')
       make_map
+    elsif body.include?('l:')
+      location = body.split(':')[-1]
+      message = %{
+        We've recorded your last location: #{location}.
+      }
+      make_sms(message)
     else
       message = %{
-        Welcome to Walkable! To get safe directions, text "<starting point> to <end point>".
+        Welcome to Walkable! Let's get you home safely.
+
+        To get safe directions, text "<starting point> to <end point>".
+
+        To record your last location, text "l: <your last location>".
       }
       make_sms(message)
     end
