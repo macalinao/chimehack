@@ -8,6 +8,14 @@ require 'nokogiri'
 require 'sanitize'
 require 'googlestaticmap'
 
+post '/callback' do
+  body = params[:Body]
+  to = params[:From]
+
+  sender = TwilioSender.new(body, to)
+  sender.make_map
+end
+
 post '/sms' do
   body = params[:body]
   to = params[:to]
