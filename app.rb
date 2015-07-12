@@ -37,6 +37,14 @@ class TwilioSender
         We've recorded your last location: #{location}.
       }
       make_sms(message)
+    elsif body.include?('r:')
+      report = body.split(':')[-1]
+      message = %{
+        You reported: #{report}
+
+        Thanks for contributing to crowdsourcing with Walkable! We'll make sure to keep others out of this area.
+      }
+      make_sms(message)
     else
       message = %{
         Welcome to Walkable! Let's get you home safely.
