@@ -54,7 +54,7 @@ class TwilioSender
     client.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
       to: number,
-      body: 'Here is a map.',
+      body: directions,
       media_url: image_url
     )
   end
