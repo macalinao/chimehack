@@ -148,14 +148,17 @@ class TwilioSender
       media_url: image_url
     )
 
-    msg_parts.each do |part|
-      puts part
-      client.messages.create(
-        from: ENV["TWILIO_PHONE_NUMBER"],
-        to: number,
-        body: part
-      ) if part.length > 10
+    if !message
+      msg_parts.each do |part|
+        puts part
+        client.messages.create(
+          from: ENV["TWILIO_PHONE_NUMBER"],
+          to: number,
+          body: part
+        ) if part.length > 10
+      end
     end
+
   end
 
 end
