@@ -111,16 +111,8 @@ class TwilioSender
 
     msg_parts = []
     msg_lines = formatted_directions.split('\n')
-    counter = 0
-    last_msg = ""
-    msg_lines.each do |line|
-      last_msg += line + "\n"
-      counter += 1
-      if counter > 7
-        counter = 0
-        msg_parts << last_msg
-        last_msg = ""
-      end
+    msg_lines.each_slice(7) do |slice|
+      msg_parts << slice.join('\n')
     end
 
     msg_parts.each do |part|
