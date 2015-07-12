@@ -148,7 +148,7 @@ class TwilioSender
       media_url: image_url
     )
 
-    if !message
+    if message == nil
       msg_parts.each do |part|
         puts part
         client.messages.create(
