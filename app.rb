@@ -31,7 +31,7 @@ class TwilioSender
   attr_reader :directions
 
   def initialize(body, number)
-    @client = Twilio::REST::Client.new ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN']
+    @client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN'])
     @places = body.split('to')
     @number = number
     init_directions
