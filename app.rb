@@ -41,7 +41,11 @@ class TwilioSender
       }
       @dbloc = location
       @places = $db[number]
-      make_map
+      if @places
+        make_map(message)
+      else
+        make_sms(message)
+      end
     elsif body.include?("r:")
       report = body.split(":")[-1]
       message = %{
@@ -130,7 +134,7 @@ class TwilioSender
     poly
   end
 
-  def make_map
+  def make_map(message)
     msg_parts = []
     msg_lines = formatted_directions.split("\n")
     msg_lines.each_slice(7) do |slice|
@@ -140,7 +144,7 @@ class TwilioSender
     client.messages.create(
       from: ENV["TWILIO_PHONE_NUMBER"],
       to: number,
-      body: "",
+      body: message || "",
       media_url: image_url
     )
 
