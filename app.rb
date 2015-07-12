@@ -67,7 +67,7 @@ class TwilioSender
   end
 
   def directions_str
-    directions.map_with_index do |el, i|
+    directions.each_with_index.map do |el, i|
       "#{i + 1}. #{el}"
     end.join('\n')
   end
