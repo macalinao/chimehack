@@ -39,7 +39,8 @@ class TwilioSender
         We've recorded your last location: #{location}.
       }
       db[number] = location
-      make_sms(message)
+
+      make_map_for(number)
     elsif body.include?("r:")
       report = body.split(":")[-1]
       message = %{
@@ -102,6 +103,14 @@ class TwilioSender
       color: "blue",
       location: MapLocation.new(address: places.last)
     })
+
+    if db.has_key?(number)
+      map.markers << MapMarker.new({
+        color: "green",
+        location: MapLocation.new(address: db[number])
+      })
+    end
+
     map.paths << make_polyline
     map
   end
