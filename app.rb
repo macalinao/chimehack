@@ -9,8 +9,6 @@ require "sanitize"
 require "googlestaticmap"
 require "polylines"
 
-db = {}
-
 post "/callback" do
   body = params[:Body]
   to = params[:From]
@@ -38,8 +36,7 @@ class TwilioSender
       message = %{
         We've recorded your last location: #{location}.
       }
-      db[number] = location
-
+      @dbloc = location
       make_map_for(number)
     elsif body.include?("r:")
       report = body.split(":")[-1]
@@ -104,10 +101,10 @@ class TwilioSender
       location: MapLocation.new(address: places.last)
     })
 
-    if db.has_key?(number)
+    if @dbloc
       map.markers << MapMarker.new({
         color: "green",
-        location: MapLocation.new(address: db[number])
+        location: MapLocation.new(address: @dbloc)
       })
     end
 
