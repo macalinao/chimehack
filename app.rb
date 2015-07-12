@@ -14,37 +14,39 @@ post '/callback' do
   puts params.to_h
 
   sender = TwilioSender.new(body, to)
-  sender.make_map
-end
-
-post '/sms' do
-  body = params[:body]
-  to = params[:to]
-
-  sender = TwilioSender.new(body, to)
-  sender.make_map
+  sender.make_response
 end
 
 class TwilioSender
 
-  attr_accessor :client, :places, :number
-  attr_reader :directions
+  attr_accessor :client, :body, :places, :number
 
   def initialize(body, number)
     @client = Twilio::REST::Client.new(ENV['TWILIO_ACCOUNT_SID'], ENV['TWILIO_AUTH_TOKEN'])
-    @places = body.split('to')
+    @body = body
     @number = number
-    init_directions
   end
 
-  def init_directions
+  def make_response
+    if body.includes?('to')
+      @places = body.split('to')
+      make_map
+    else
+      message = %{
+        Welcome to Walkable! To get safe directions, text "<starting point> to <end point>".
+      }
+      make_sms(message)
+    end
+  end
+
+  def directions
     response = GoogleDirections.new(places.first, places.last)
     doc = Nokogiri::XML(response.xml)
     directions = ''
     doc.xpath('/DirectionsResponse/route/leg/step/html_instructions').each do |step|
       directions << Sanitize.fragment("#{step.content}\n")
     end
-    @directions = directions
+    return directions
   end
 
   def formatted_directions
@@ -55,11 +57,11 @@ class TwilioSender
     }
   end
 
-  def make_sms
+  def make_sms(message)
     client.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
       to: number,
-      body: directions
+      body: message
     )
   end
 
