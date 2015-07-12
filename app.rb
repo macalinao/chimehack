@@ -99,9 +99,19 @@ class TwilioSender
     client.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
       to: number,
-      body: formatted_directions,
+      body: '',
       media_url: image_url
     )
+
+    msg_parts = formatted_directions.split('\n').each_slice(7) {|s| s.join('\n') }
+    msg_parts.each do |part|
+      client.messages.create(
+        from: ENV['TWILIO_PHONE_NUMBER'],
+        to: number,
+        body: part,
+        media_url: image_url
+      )
+    end
   end
 
 end
