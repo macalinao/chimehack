@@ -74,7 +74,7 @@ class TwilioSender
 
   def formatted_directions
     %{
-      Let"s get you home safely.
+      Let's get you home safely.
       #{directions_str}
       Your destination is on the left.
     }
@@ -89,7 +89,7 @@ class TwilioSender
   end
 
   def image_url
-    map = GoogleStaticMap.new(zoom: 13)
+    map = GoogleStaticMap.new(zoom: 11)
     map.markers << MapMarker.new({
       color: "red",
       location: MapLocation.new(address: places.first)
@@ -109,6 +109,8 @@ class TwilioSender
       media_url: image_url
     )
 
+    puts formatted_directions
+
     msg_parts = []
     msg_lines = formatted_directions.split("\n")
     msg_lines.each_slice(7) do |slice|
@@ -116,6 +118,7 @@ class TwilioSender
     end
 
     msg_parts.each do |part|
+      puts part
       client.messages.create(
         from: ENV["TWILIO_PHONE_NUMBER"],
         to: number,
