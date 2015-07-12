@@ -134,7 +134,7 @@ class TwilioSender
     poly
   end
 
-  def make_map(message)
+  def make_map(message = nil)
     msg_parts = []
     msg_lines = formatted_directions.split("\n")
     msg_lines.each_slice(7) do |slice|
