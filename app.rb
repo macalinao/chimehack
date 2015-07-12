@@ -75,7 +75,8 @@ class TwilioSender
     doc.xpath("/DirectionsResponse/route/leg/step/html_instructions").each do |step|
       directions << Sanitize.fragment("#{step.content}")
     end
-    @polyline = doc.xpath("/DirectionsResponse/route/overview_polyline/points").first.content
+    polyline_p = doc.xpath("/DirectionsResponse/route/overview_polyline/points").first
+    @polyline = polyline_p.content if polyline_p
     return directions
   end
 
@@ -127,6 +128,7 @@ class TwilioSender
   end
 
   def make_polyline
+    return if !@polyline
     poly = MapPolygon.new(color: "0xFF0000FF", fillcolor: "0x00FF0000")
     parsed_polyline = Polylines::Decoder.decode_polyline(@polyline)
     parsed_polyline.values_at(* parsed_polyline.each_index.select {|i| i % 2 == 0}).each do |point|
