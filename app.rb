@@ -7,6 +7,7 @@ require "twilio-ruby"
 require "nokogiri"
 require "sanitize"
 require "googlestaticmap"
+require "polylines"
 
 post "/callback" do
   body = params[:Body]
@@ -63,6 +64,7 @@ class TwilioSender
     doc.xpath("/DirectionsResponse/route/leg/step/html_instructions").each do |step|
       directions << Sanitize.fragment("#{step.content}")
     end
+    @polyline = doc.xpath("/DirectionsResponse/route/overview_polyline/points").first.content
     return directions
   end
 
@@ -98,10 +100,27 @@ class TwilioSender
       color: "blue",
       location: MapLocation.new(address: places.last)
     })
+    map.paths << make_polyline
     image_url = map.url("http")
   end
 
+  def make_polyline
+    poly = MapPolygon.new(color: "0xFF0000FF", fillcolor: "0x00FF0000")
+    parsed_polyline = Polylines::Decoder.decode_polyline(@polyline)
+    parsed_polyline.values_at(* parsed_polyline.each_index.select {|i| i % 2 == 0}).each do |point|
+      poly.points << MapLocation.new(latitude: point[0], longitude: point[1])
+    end
+    poly.points << MapLocation.new(latitude: parsed_polyline.last[0], longitude: parsed_polyline.last[1])
+    poly
+  end
+
   def make_map
+    msg_parts = []
+    msg_lines = formatted_directions.split("\n")
+    msg_lines.each_slice(7) do |slice|
+      msg_parts << slice.join("\n")
+    end
+
     client.messages.create(
       from: ENV["TWILIO_PHONE_NUMBER"],
       to: number,
@@ -109,21 +128,13 @@ class TwilioSender
       media_url: image_url
     )
 
-    puts formatted_directions
-
-    msg_parts = []
-    msg_lines = formatted_directions.split("\n")
-    msg_lines.each_slice(7) do |slice|
-      msg_parts << slice.join("\n")
-    end
-
     msg_parts.each do |part|
       puts part
       client.messages.create(
         from: ENV["TWILIO_PHONE_NUMBER"],
         to: number,
         body: part
-      )
+      ) if part.length > 10
     end
   end
 
