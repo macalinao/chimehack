@@ -28,7 +28,7 @@ class TwilioSender
   end
 
   def make_response
-    if body.includes?('to')
+    if body.include?('to')
       @places = body.split('to')
       make_map
     else
