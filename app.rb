@@ -59,17 +59,23 @@ class TwilioSender
   def directions
     response = GoogleDirections.new(places.first, places.last)
     doc = Nokogiri::XML(response.xml)
-    directions = ''
+    directions = []
     doc.xpath('/DirectionsResponse/route/leg/step/html_instructions').each do |step|
-      directions << Sanitize.fragment("#{step.content}\n")
+      directions << Sanitize.fragment("#{step.content}")
     end
     return directions
+  end
+
+  def directions_str
+    directions.map_with_index do |el, i|
+      "#{i + 1}. #{el}"
+    end.join('\n')
   end
 
   def formatted_directions
     %{
       Let's get you home safely.
-      #{directions}
+      #{directions_str}
       Your destination is on the left.
     }
   end
