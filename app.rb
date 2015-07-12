@@ -37,7 +37,7 @@ class TwilioSender
         We've recorded your last location: #{location}.
       }
       @dbloc = location
-      make_map_for(number)
+      make_map
     elsif body.include?("r:")
       report = body.split(":")[-1]
       message = %{
