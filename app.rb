@@ -9,6 +9,8 @@ require "sanitize"
 require "googlestaticmap"
 require "polylines"
 
+$db = {}
+
 post "/callback" do
   body = params[:Body]
   to = params[:From]
@@ -30,6 +32,7 @@ class TwilioSender
   def make_response
     if body.include?("to")
       @places = body.split("to")
+      $db[number] = @places
       make_map
     elsif body.include?("l:")
       location = body.split(":")[-1]
@@ -37,6 +40,7 @@ class TwilioSender
         We've recorded your last location: #{location}.
       }
       @dbloc = location
+      @places = $db[number]
       make_map
     elsif body.include?("r:")
       report = body.split(":")[-1]
