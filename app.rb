@@ -11,6 +11,7 @@ require 'googlestaticmap'
 post '/callback' do
   body = params[:Body]
   to = params[:From]
+  puts params.to_h
 
   sender = TwilioSender.new(body, to)
   sender.make_map
