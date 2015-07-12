@@ -33,7 +33,7 @@ class TwilioSender
     elsif body.include?("l:")
       location = body.split(":")[-1]
       message = %{
-        We"ve recorded your last location: #{location}.
+        We've recorded your last location: #{location}.
       }
       make_sms(message)
     elsif body.include?("r:")
@@ -41,12 +41,12 @@ class TwilioSender
       message = %{
         You reported: #{report}
 
-        Thanks for contributing to crowdsourcing with Walkable! We"ll make sure to keep others out of this area.
+        Thanks for contributing to crowdsourcing with Walkable! We'll make sure to keep others out of this area.
       }
       make_sms(message)
     else
       message = %{
-        Welcome to Walkable! Let"s get you home safely.
+        Welcome to Walkable! Let's get you home safely.
 
         To get safe directions, text "<starting point> to <end point>".
 
