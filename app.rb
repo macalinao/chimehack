@@ -61,6 +61,8 @@ class TwilioSender
         To get safe directions, text "<starting point> to <end point>".
 
         To record your last location, text "l: <your last location>".
+
+        To report suspicious behavior, text "r: <message>".
       }
       make_sms(message)
     end
