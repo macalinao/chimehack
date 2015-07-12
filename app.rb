@@ -9,6 +9,8 @@ require "sanitize"
 require "googlestaticmap"
 require "polylines"
 
+db = {}
+
 post "/callback" do
   body = params[:Body]
   to = params[:From]
@@ -36,6 +38,7 @@ class TwilioSender
       message = %{
         We've recorded your last location: #{location}.
       }
+      db[number] = location
       make_sms(message)
     elsif body.include?("r:")
       report = body.split(":")[-1]
@@ -89,7 +92,7 @@ class TwilioSender
     )
   end
 
-  def image_url
+  def map
     map = GoogleStaticMap.new(zoom: 14)
     map.markers << MapMarker.new({
       color: "red",
@@ -100,6 +103,10 @@ class TwilioSender
       location: MapLocation.new(address: places.last)
     })
     map.paths << make_polyline
+    map
+  end
+
+  def image_url
     image_url = map.url("http")
   end
 
