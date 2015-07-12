@@ -13,7 +13,6 @@ post '/sms' do
   to = params[:to]
 
   sender = TwilioSender.new(body, to)
-  sender.make_sms
   sender.make_map
 end
 
@@ -39,6 +38,14 @@ class TwilioSender
     @directions = directions
   end
 
+  def formatted_directions
+    %{
+      Let's get you home safely.
+      #{directions}
+      Your destination is on the left.
+    }
+  end
+
   def make_sms
     client.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
@@ -47,14 +54,17 @@ class TwilioSender
     )
   end
 
-  def make_map
+  def image_url
     map = GoogleStaticMap.new
     map.markers << MapMarker.new(:color => "blue", :location => MapLocation.new(:address => places.last))
     image_url = map.url('http')
+  end
+
+  def make_map
     client.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
       to: number,
-      body: directions,
+      body: formatted_directions,
       media_url: image_url
     )
   end
