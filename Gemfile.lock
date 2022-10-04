@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     builder (3.2.2)
-    crass (1.0.2)
+    crass (1.0.6)
     dotenv (2.0.2)
     google_directions (0.1.6.2)
       nokogiri (>= 1.4.1)
@@ -12,16 +12,16 @@ GEM
     multi_json (1.11.2)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    nokogumbo (1.4.1)
+    nokogumbo (1.5.0)
       nokogiri
     polylines (0.3.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
-    sanitize (4.0.0)
+    sanitize (4.6.6)
       crass (~> 1.0.2)
       nokogiri (>= 1.4.4)
-      nokogumbo (= 1.4.1)
+      nokogumbo (~> 1.4)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
