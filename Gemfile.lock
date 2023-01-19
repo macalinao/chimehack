@@ -15,7 +15,7 @@ GEM
     nokogumbo (1.4.1)
       nokogiri
     polylines (0.3.0)
-    rack (1.6.4)
+    rack (1.6.13)
     rack-protection (1.5.3)
       rack
     sanitize (4.0.0)
